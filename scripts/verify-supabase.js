@@ -27,7 +27,7 @@ function loadDotEnv() {
       }
     }
   }
-  return { ...env, ...process.env };
+  return { ...process.env, ...env };
 }
 
 async function run() {

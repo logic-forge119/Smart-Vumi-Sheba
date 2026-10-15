@@ -35,6 +35,7 @@ export class ApiRouter {
     if (supabase) {
       this.supabase = supabase;
     } else if (
+      env.nodeEnv !== 'test' &&
       env.supabaseUrl &&
       env.supabaseServiceRoleKey &&
       !env.supabaseServiceRoleKey.startsWith('REPLACE_')

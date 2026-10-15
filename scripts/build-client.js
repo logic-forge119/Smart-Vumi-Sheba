@@ -20,7 +20,8 @@ const filesToCopy = [
   'sw.js',
   'manifest.webmanifest',
   'icon.svg',
-  '_headers'
+  '_headers',
+  '_redirects'
 ];
 
 for (const f of filesToCopy) {

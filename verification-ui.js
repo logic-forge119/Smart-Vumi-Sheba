@@ -7,7 +7,29 @@ function showVerification(value=''){
  if(value)healthCheck();
 }
 function loadScenario(i){const s=LandDemo.scenarios[i];if(!s)return;$('healthNo').value=s.record;$('sellerIdentity').value=s.sellerId;healthCheck()}
-function healthCheck(){const q=norm($('healthNo').value.trim());const r=records.find(x=>x.id===q||x.plot===q);if(!r){currentReport=null;$('healthResult').innerHTML='<div class="empty">এই নম্বরের নমুনা তথ্য নেই। উপরের চারটি উদাহরণ থেকে বেছে নিন।<br>নমুনায় না থাকা মানে সরকারি রেকর্ড নেই—এমন সিদ্ধান্ত নয়।</div>';return}const seller=$('sellerIdentity').value;if(seller&&!LandDemo.citizens.some(c=>c.id===seller))return toast('কৃত্রিম পরিচয় নির্বাচন করুন।');currentReport={...LandVerification.evaluate(r,seller,LandDemo),generatedAt:new Date().toISOString(),id:'REPORT-'+Date.now(),disclaimer:'সম্পূর্ণ কৃত্রিম ডেটার প্রতিবেদন; সরকারি রেকর্ড, মালিকানার নিশ্চয়তা বা লেনদেন অনুমোদন নয়।'};$('healthResult').innerHTML=renderVerificationReport(currentReport)}
+async function healthCheck(){
+  const q=norm($('healthNo').value.trim());
+  if(!q){currentReport=null;$('healthResult').innerHTML='';return}
+  const seller=$('sellerIdentity').value;
+  $('healthResult').innerHTML='<div class="empty">সার্ভারে যাচাইয়ের অনুরোধ পাঠানো হচ্ছে…</div>';
+  try {
+    const res=await BhumiApi.verify({record_id:q,seller_id:seller||undefined});
+    currentReport=res.report;
+    currentReport.id=res.id;
+    $('healthResult').innerHTML=renderVerificationReport(currentReport);
+  } catch(err){
+    if(window.LandDemo&&window.LandVerification){
+      const r=records.find(x=>x.id===q||x.plot===q);
+      if(r){
+        currentReport={...LandVerification.evaluate(r,seller,LandDemo),generatedAt:new Date().toISOString(),id:'OFFLINE-'+Date.now(),disclaimer:'সার্ভার সংযোগ অনুপস্থিত — এটি ব্রাউজারের অফলাইন নমুনা; সার্ভার রিপোর্ট নয়।'};
+        $('healthResult').innerHTML='<p class="note">⚠️ সার্ভার অফলাইন: ব্রাউজারের স্থানীয় ডেমো দেখানো হচ্ছে (সার্ভার যাচাই নয়)।</p>'+renderVerificationReport(currentReport);
+        return;
+      }
+    }
+    currentReport=null;
+    $('healthResult').innerHTML=`<div class="empty">যাচাই ব্যর্থ হয়েছে: ${esc(err.message||'সার্ভার সংযোগ পাওয়া যায়নি।')}</div>`;
+  }
+}
 function renderVerificationReport(report,saved=false){
  const state={pass:'মিল / চিহ্ন নেই',fail:'সতর্কতা',unknown:'তথ্য নেই'};
  const title={attention:'সতর্কতার সংকেত পাওয়া গেছে',incomplete:'সম্পূর্ণ যাচাইয়ের তথ্য নেই',consistent:'পরিচিত নমুনা তথ্যের মধ্যে অমিল পাওয়া যায়নি'};
@@ -17,7 +39,27 @@ function renderVerificationReport(report,saved=false){
 }
 async function saveVerification(){if(!currentReport)return toast('আগে নমুনা যাচাই করুন।');try{await storeRow('reports',structuredClone(currentReport));toast('রিপোর্ট এই ডিভাইসে সংরক্ষিত।')}catch{toast('রিপোর্ট সংরক্ষণ করা যায়নি। JSON ব্যাকআপ ব্যবহার করুন।')}}
 function downloadVerification(){if(!currentReport)return;const url=URL.createObjectURL(new Blob([JSON.stringify(currentReport,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`bhumi-demo-report-${currentReport.record.id}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-async function showSavedReports(){activeModule='reports';$('modalTitle').textContent='অফলাইনে সংরক্ষিত নমুনা রিপোর্ট';$('modalBody').innerHTML='<p>এই ডিভাইসের রিপোর্ট পড়া হচ্ছে…</p>';try{const list=await rows('reports');if(activeModule!=='reports')return;$('modalBody').innerHTML=demoNote()+`${list.length?list.sort((a,b)=>b.generatedAt.localeCompare(a.generatedAt)).map(r=>`<div class="saved-row"><span><strong>খতিয়ান ${bn(r.record.id)} · দাগ ${bn(r.record.plot)}</strong><small>${new Date(r.generatedAt).toLocaleString('bn-BD')} · সতর্কতা ${bn(r.counts.fail)} / অজানা ${bn(r.counts.unknown)}</small></span><span><button class="btn light small" onclick="readSavedReport('${esc(r.id)}')">দেখুন</button> <button class="close" onclick="deleteSavedReport('${esc(r.id)}')" aria-label="রিপোর্ট মুছুন">×</button></span></div>`).join(''):'<div class="empty">সংরক্ষিত রিপোর্ট নেই। যাচাই করে “অফলাইনে সংরক্ষণ” চাপুন।</div>'}<div class="form-actions"><button class="btn" onclick="openModule('health')">নতুন যাচাই</button><button class="btn light" onclick="openModule('drafts')">আমার খসড়া</button></div>`}catch{$('modalBody').innerHTML='<div class="empty">রিপোর্ট পড়া সম্ভব হয়নি। ব্রাউজারের সংরক্ষণ অনুমতি দেখুন।</div>'}}
+async function showSavedReports(){
+  activeModule='reports';
+  $('modalTitle').textContent='সংরক্ষিত নমুনা রিপোর্ট';
+  $('modalBody').innerHTML='<p>রিপোর্ট লোড হচ্ছে…</p>';
+  try {
+    let list=[];
+    try {
+      const serverRes=await BhumiApi.getReports();
+      if(serverRes?.items?.length){
+        list=serverRes.items;
+      }
+    } catch(e){}
+    if(!list.length){
+      list=await rows('reports');
+    }
+    if(activeModule!=='reports')return;
+    $('modalBody').innerHTML=demoNote()+`${list.length?list.sort((a,b)=>b.generatedAt.localeCompare(a.generatedAt)).map(r=>`<div class="saved-row"><span><strong>খতিয়ান ${bn(r.record.id)} · দাগ ${bn(r.record.plot)}</strong><small>${new Date(r.generatedAt).toLocaleString('bn-BD')} · সতর্কতা ${bn(r.counts.fail)} / অজানা ${bn(r.counts.unknown)}</small></span><span><button class="btn light small" onclick="readSavedReport('${esc(r.id)}')">দেখুন</button> <button class="close" onclick="deleteSavedReport('${esc(r.id)}')" aria-label="রিপোর্ট মুছুন">×</button></span></div>`).join(''):'<div class="empty">সংরক্ষিত রিপোর্ট নেই। যাচাই করে “অফলাইনে সংরক্ষণ” চাপুন।</div>'}<div class="form-actions"><button class="btn" onclick="openModule('health')">নতুন যাচাই</button><button class="btn light" onclick="openModule('drafts')">আমার খসড়া</button></div>`;
+  } catch(err){
+    $('modalBody').innerHTML='<div class="empty">রিপোর্ট পড়া সম্ভব হয়নি।</div>';
+  }
+}
 async function readSavedReport(id){try{const r=(await rows('reports')).find(r=>r.id===id);if(!r)return toast('রিপোর্ট পাওয়া যায়নি।');currentReport=r;activeModule='reports';$('modalTitle').textContent='সংরক্ষিত নমুনা যাচাই রিপোর্ট';$('modalBody').innerHTML=renderVerificationReport(r,true)+'<div class="form-actions"><button class="btn light" onclick="showSavedReports()">← সংরক্ষিত রিপোর্ট</button></div>'}catch{toast('রিপোর্ট খোলা যায়নি।')}}
 async function deleteSavedReport(id){if(!confirm('এই ডিভাইস থেকে রিপোর্টটি মুছবেন?'))return;try{await deleteRow('reports',id);showSavedReports()}catch{toast('রিপোর্ট মুছতে ব্যর্থ।')}}
 // Existing services stay intact; put the primary P5 tool first in the same card grid.

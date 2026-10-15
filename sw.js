@@ -2,6 +2,7 @@ const CACHE = 'bhumi-shell-v3';
 const SHELL_FILES = [
   './',
   './index.html',
+  './config.js?v=3',
   './js/api-client.js?v=3',
   './demo-data.js?v=3',
   './verification.js?v=3',

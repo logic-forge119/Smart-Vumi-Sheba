@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/server",
-    "noEmit": true
+    "noEmit": false
   },
   "include": ["server/**/*", "netlify/**/*"]
 }

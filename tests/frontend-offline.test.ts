@@ -22,11 +22,14 @@ describe('Phase 7 Frontend Integration & Offline Gate', () => {
     expect(swContent).toContain("e.request.method !== 'GET'");
   });
 
-  it('index.html includes js/api-client.js before application scripts', () => {
+  it('index.html includes config.js and js/api-client.js before application scripts', () => {
     const html = fs.readFileSync(indexHtmlPath, 'utf8');
+    expect(html).toContain('<script src="config.js?v=3"></script>');
     expect(html).toContain('<script src="js/api-client.js?v=3"></script>');
+    const cfgIndex = html.indexOf('config.js');
     const apiIndex = html.indexOf('js/api-client.js');
     const appIndex = html.indexOf('app.js');
+    expect(cfgIndex).toBeLessThan(apiIndex);
     expect(apiIndex).toBeLessThan(appIndex);
   });
 

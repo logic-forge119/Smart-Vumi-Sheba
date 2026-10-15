@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "node --check scripts/*.js"
+    "lint": "node --check scripts/*.js",
+    "preview": "node scripts/preview-server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

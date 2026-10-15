@@ -140,6 +140,7 @@ const BhumiApi = (() => {
     }),
     deleteDraft: (id) => request(`/drafts/${encodeURIComponent(id)}`, {
       method: 'DELETE'
-    })
+    }),
+    getConfig: () => (window.__BHUMI_CONFIG__ || {})
   };
 })();

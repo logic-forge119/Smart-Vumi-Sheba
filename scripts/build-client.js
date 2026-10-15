@@ -43,4 +43,15 @@ if (fs.existsSync(jsDir)) {
   }
 }
 
-console.log('Static assets copied to dist/public successfully.');
+// Generate deliberate public browser config (Never includes secret keys)
+const publicConfig = `window.__BHUMI_CONFIG__ = Object.freeze({
+  SUPABASE_URL: ${JSON.stringify(process.env.SUPABASE_URL || '')},
+  SUPABASE_PUBLISHABLE_KEY: ${JSON.stringify(process.env.SUPABASE_PUBLISHABLE_KEY || '')},
+  DATA_MODE: "synthetic",
+  ACTIVE_DATASET_VERSION: ${JSON.stringify(process.env.ACTIVE_DATASET_VERSION || 'synthetic-v2')}
+});
+`;
+fs.writeFileSync(path.join(distPublic, 'config.js'), publicConfig, 'utf8');
+fs.writeFileSync(path.join(root, 'config.js'), publicConfig, 'utf8');
+
+console.log('Static assets and public config copied to dist/public successfully.');

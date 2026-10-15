@@ -1,0 +1,15 @@
+# TEMPLATE: adapt to audited repository. Source file is not an implemented backend.
+[build]
+  command = "npm run build"
+  publish = "dist"
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+# Router must preserve /api/v1 semantics or normalize forwarded path explicitly.
+# Do not add SPA fallback unless actual frontend needs it; API route must come first.
+# Function secrets configured in provider runtime environment, not this file.

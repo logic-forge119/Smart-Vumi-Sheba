@@ -1,0 +1,53 @@
+{
+  "dataset_version": "synthetic-v2",
+  "as_of": "2026-10-13",
+  "evaluation_date": "2026-10-13",
+  "district": "ঢাকা",
+  "upazila": "সাভার",
+  "mouza": "আশুলিয়া",
+  "source": "reference/current-static-site/demo-data.js",
+  "identities": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06"
+  ],
+  "cases": [
+    {
+      "khatian": "1234",
+      "dag": "1204",
+      "survey": "BS",
+      "seller": "C02",
+      "expected": "consistent"
+    },
+    {
+      "khatian": "5678",
+      "dag": "1205",
+      "survey": "RS",
+      "seller": "C03",
+      "expected": "attention"
+    },
+    {
+      "khatian": "9012",
+      "dag": "1206",
+      "survey": "BS",
+      "seller": "C05",
+      "expected": "attention"
+    },
+    {
+      "khatian": "3456",
+      "dag": "1207",
+      "survey": "BS",
+      "seller": "C06",
+      "expected": "incomplete"
+    }
+  ],
+  "notes": [
+    "Map original string IDs to deterministic UUIDs; retain original display/source codes.",
+    "Missing booleans remain null; null cases list means unknown, not no cases.",
+    "Explicit authored completeness and freshness metadata required before expected consistent result.",
+    "No real citizen contact data or land records."
+  ]
+}

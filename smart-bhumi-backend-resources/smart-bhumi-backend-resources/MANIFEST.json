@@ -1,0 +1,177 @@
+{
+  "package": "smart-bhumi-backend-resources",
+  "created": "2026-10-15",
+  "status": "design handoff; backend not implemented",
+  "files": [
+    {
+      "path": "ANTIGRAVITY_MASTER_PROMPT.md",
+      "bytes": 4637,
+      "sha256": "14177f0afa91db0cd40e8cf75fdecec00139db5421d24514ceffed852c90b7df"
+    },
+    {
+      "path": "START_HERE_BN.md",
+      "bytes": 3026,
+      "sha256": "2d5fe1e9747d9cfdcaced3c2b0852c5aac118dbd6219486a19de06c02a44a2fb"
+    },
+    {
+      "path": "api/README.md",
+      "bytes": 1785,
+      "sha256": "1f46ea768de5529cece4bed8b04dad2415c3c5de6ec977481b31b416b29d7912"
+    },
+    {
+      "path": "api/openapi.json",
+      "bytes": 137240,
+      "sha256": "8fe81f198f7153238f492e57a04087a0ccee6e7089694254dec44b9cfbaf9ea0"
+    },
+    {
+      "path": "config/.env.example",
+      "bytes": 513,
+      "sha256": "a9c99e64749de7e54ededb7ddb2aae15e996f95437b2bdddacc2926b269db84f"
+    },
+    {
+      "path": "config/gitignore.append.txt",
+      "bytes": 162,
+      "sha256": "976be25a9585f77aae5d23d864ff2774c212c54f084e4232c777087f5e1b36a1"
+    },
+    {
+      "path": "config/netlify.toml.template",
+      "bytes": 559,
+      "sha256": "fcb7d040ff75fdfb7c4f82eda22ffb5d51772c9c5fae291d0a5e22faf18e0545"
+    },
+    {
+      "path": "database/README.md",
+      "bytes": 1707,
+      "sha256": "3487f292c194a8ec6c736c83cf8ad0081a27ac675374cab8492a50fa523fd7b6"
+    },
+    {
+      "path": "database/fixtures.expected.json",
+      "bytes": 1249,
+      "sha256": "1f97fcb2468cd1d456a2aea933c54071d15901c0022b46bccf592fa80731318c"
+    },
+    {
+      "path": "database/schema.reference.sql",
+      "bytes": 11532,
+      "sha256": "cf108d1381d95d8708b48e39a8329e5bdd8fd9befb676b44fe0c3c5bc8a6218d"
+    },
+    {
+      "path": "docs/00_CURRENT_STATE_AUDIT.md",
+      "bytes": 2647,
+      "sha256": "cd479d0e07bdc244678909da2ec74e37195e827dedb586928e959330b9f4c9cc"
+    },
+    {
+      "path": "docs/01_PRD_SCOPE.md",
+      "bytes": 3580,
+      "sha256": "9b4f4b8ac7cb1b33f0941b10c8065e952bbceaaa4888c089dec41bad4d8db251"
+    },
+    {
+      "path": "docs/02_TRD_ARCHITECTURE.md",
+      "bytes": 5021,
+      "sha256": "7e63b389e6784fb2e3df134ec4443d0f834f3414f3019077bbad4c3b71dd7bae"
+    },
+    {
+      "path": "docs/03_USER_AND_DATA_FLOWS.md",
+      "bytes": 3572,
+      "sha256": "4a2892b8a3cb6e1655e24639d9b611f6e2c3f6e14123203e53317f16977321ec"
+    },
+    {
+      "path": "docs/04_DATABASE_AND_ACCESS.md",
+      "bytes": 3442,
+      "sha256": "01551196ed2fab023e787d23a79e0b3e00f8f9f17de9f4851344998fc6304642"
+    },
+    {
+      "path": "docs/05_VERIFICATION_RULES.md",
+      "bytes": 3804,
+      "sha256": "ff0d389cfda35a6c80b37580adfe3920da9da25e12a009332e9ff8644e4f5cac"
+    },
+    {
+      "path": "docs/06_API_SECURITY.md",
+      "bytes": 4685,
+      "sha256": "3f70ad88e348bb77c19b0fe08eb49fa6b828d2635129c680644692a45630d532"
+    },
+    {
+      "path": "docs/07_FRONTEND_OFFLINE.md",
+      "bytes": 2583,
+      "sha256": "fcea2e2aa4faef80ec9d2944bafc11c7114186dc7268713be1b1e9f5c59db440"
+    },
+    {
+      "path": "docs/08_TEST_PLAN.md",
+      "bytes": 2154,
+      "sha256": "e69dfefda11a5ec8bba9d3a318e3a1dbc973a75fc9eb9d0bd01a2a7882f5ac78"
+    },
+    {
+      "path": "docs/09_SETUP_DEPLOYMENT.md",
+      "bytes": 4017,
+      "sha256": "18525a78df49b10f09764efb3b589c4d8e92a15b04b3a41c619a27f1a67e9781"
+    },
+    {
+      "path": "docs/10_IMPLEMENTATION_PHASES.md",
+      "bytes": 2806,
+      "sha256": "3592dcc73a4e9dbe3c5f94ac8efe85e43f8f0f56fe88b612e565e93fd2e9ec8e"
+    },
+    {
+      "path": "docs/11_RESOURCES_AND_DECISIONS.md",
+      "bytes": 2783,
+      "sha256": "61e4430f9a88ed27295a6ec33fa5e03435f453194bc2ca5dc2f513b5becb2d23"
+    },
+    {
+      "path": "docs/12_HANDOVER_AND_SHOWCASE.md",
+      "bytes": 2162,
+      "sha256": "958f0dbdf8d0a8bee9d41fa0313f5eedb4c394fd1f7234b89300db4ff69b1374"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_STATUS_TEMPLATE.md",
+      "bytes": 430,
+      "sha256": "98df788d354e9fe691278cde763e81b238b67ccac5281c208dc5bc2c0fd003f9"
+    },
+    {
+      "path": "reference/current-static-site/_headers",
+      "bytes": 214,
+      "sha256": "8707e124ccf7f0e3172bf7085472ae79f1e80724bfbc209f505d5a2c4ff1e97a"
+    },
+    {
+      "path": "reference/current-static-site/app.js",
+      "bytes": 42979,
+      "sha256": "a3eb85a25e5007b5b92053f100c93f972c7129b344b90a3e75e98d0eb6704bb4"
+    },
+    {
+      "path": "reference/current-static-site/demo-data.js",
+      "bytes": 4596,
+      "sha256": "a825d1c955e99a50ee0d4ffc2241d2a93659700e6f2a0a54692b0c3ca9022bac"
+    },
+    {
+      "path": "reference/current-static-site/icon.svg",
+      "bytes": 278,
+      "sha256": "1dfa74d7b5e46783a4145ae08bcdbaa859d5bccdabc4fd548e08f0d25d5bb786"
+    },
+    {
+      "path": "reference/current-static-site/index.html",
+      "bytes": 38148,
+      "sha256": "566f239d471bfd7a616abbfa2df528dfba5a870380b366b134faa25e93ce1bbe"
+    },
+    {
+      "path": "reference/current-static-site/manifest.webmanifest",
+      "bytes": 464,
+      "sha256": "6a486d56e6aaf1539069a6305b391e2e2286830859dd7587aeafd786af07a2cb"
+    },
+    {
+      "path": "reference/current-static-site/sw.js",
+      "bytes": 800,
+      "sha256": "6a79b57129c955e340ae1798d7d8d8d07f0c6dc3b8eb737029fccea34d162caa"
+    },
+    {
+      "path": "reference/current-static-site/verification-ui.js",
+      "bytes": 14281,
+      "sha256": "703e0245e33f7aae6f5d1b7b05aa64e07cd68d620a8590e22e964bed41ae7a19"
+    },
+    {
+      "path": "reference/current-static-site/verification.js",
+      "bytes": 7013,
+      "sha256": "70fddd9e76be03ae68f81afcc2bc1606637c322e8582812636d8e4be3954756a"
+    },
+    {
+      "path": "tests/acceptance-matrix.csv",
+      "bytes": 2762,
+      "sha256": "fed87a6b4f0cfa4fa32e9b8667a22a5d484045f214665ab38be3dcf7c3257bbc"
+    }
+  ]
+}

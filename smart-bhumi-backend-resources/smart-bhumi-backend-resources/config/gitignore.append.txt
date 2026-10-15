@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.netlify/
+dist/
+coverage/
+test-results/
+# Ensure no local provider secrets or exported credentials enter version control.

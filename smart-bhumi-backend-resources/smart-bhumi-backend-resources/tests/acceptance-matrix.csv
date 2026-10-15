@@ -1,0 +1,36 @@
+id,priority,area,case,expected
+T01,P0,rules,1234 BS seller C02 with complete sources,consistent
+T02,P0,rules,5678 RS seller C03,attention with conflicting deeds
+T03,P0,rules,9012 BS seller C05,attention with khas and acquisition
+T04,P0,rules,3456 BS seller C06,incomplete and null remains unknown
+T05,P0,auth,missing expired or forged JWT on report create,401 and no write
+T06,P0,ownership,user B reads known user A report UUID,404 and no content
+T07,P0,ownership,user B patches or deletes A draft,404 and unchanged
+T08,P0,roles,visitor submits admin role or owner_uid,422 and no privilege change
+T09,P0,database,browser anon and authenticated query app tables,permission denied or no access
+T10,P0,scope,same dag in another mouza or survey,no cross-scope match
+T11,P0,rules,Bangla and ASCII digits equivalent,same scoped record
+T12,P0,rules,no case rows with incomplete source,unknown not pass
+T13,P0,rules,legitimate A to B to A to C reacquisition,no false double-sale signal
+T14,P0,rules,partial share or ambiguous same-date deeds,unknown for unsupported chain
+T15,P0,atomicity,concurrent same user key and same body,one report and same replay response
+T16,P0,atomicity,same key and different body,409 without extra report
+T17,P0,atomicity,injected persist failure,report audit key rolled back
+T18,P0,drafts,two updates same expected revision,one success one 409
+T19,P0,immutability,attempt edit published evidence or report,blocked except documented retention path
+T20,P0,frontend,backend down in live mode,503 retry UI no demo fallback
+T21,P0,cache,service worker sees API auth private URLs,no cache interception or storage
+T22,P0,logout,logout user A then session B,no A cache queue or private views
+T23,P0,security,server key scan built JS logs artifacts,no privileged secret
+T24,P0,validation,unknown fields oversize or injection text,rejected or safely rendered
+T25,P0,limits,parallel requests exceed shared quota,429 Retry-After across workers
+T26,P0,privacy,demo forms and seeded records,no real names phones NID contact data
+T27,P1,tracker,MUT-2026-8849 scoped request,correct synthetic stage events
+T28,P1,migration,reset migrate seed twice,deterministic relationships no duplicates
+T29,P1,offline,saved report offline,visible historical timestamp no fresh claim
+T30,P1,visual,mobile desktop keyboard Bangla views,preserved usable green white UI
+T31,P0,version,cross-version FK and source mutation,blocked or new immutable version
+T32,P1,load,20 concurrent own preview 1000 synthetic parcels,record actual p95 errors and cold starts
+T33,P0,deploy,API route and SPA fallback,JSON response never index HTML
+T34,P0,roles,reviewer attempts registry publish,403
+T35,P0,session,anonymous subject cleared then restored page,no false account recovery claim

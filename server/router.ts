@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { ServerEnv } from './env.js';
 import { AppError, createErrorResponse } from './errors.js';
 import { verifyAuthToken, type AuthContext } from './auth/index.js';
@@ -27,9 +28,56 @@ export interface HttpResponse {
 
 export class ApiRouter {
   private readonly repository: Repository;
+  private readonly supabase?: SupabaseClient;
+  private readonly inMemoryRateLimits = new Map<string, { tokens: number; lastReplenished: number }>();
 
-  constructor(private readonly env: ServerEnv) {
-    this.repository = new Repository(env);
+  constructor(private readonly env: ServerEnv, supabase?: SupabaseClient) {
+    if (supabase) {
+      this.supabase = supabase;
+    } else if (
+      env.supabaseUrl &&
+      env.supabaseServiceRoleKey &&
+      !env.supabaseServiceRoleKey.startsWith('REPLACE_')
+    ) {
+      this.supabase = createClient(env.supabaseUrl, env.supabaseServiceRoleKey, {
+        auth: { persistSession: false }
+      });
+    }
+    this.repository = new Repository(env, this.supabase);
+  }
+
+  private async checkRateLimit(key: string, maxTokens: number, refillRateSeconds: number): Promise<void> {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase.rpc('check_rate_limit', {
+          p_key: key,
+          p_max_tokens: maxTokens,
+          p_refill_rate_seconds: refillRateSeconds
+        });
+        if (!error && data === false) {
+          throw new AppError(429, 'TOO_MANY_REQUESTS', 'অনুরোধের সীমা অতিক্রম করেছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+        }
+      } catch (err) {
+        if (err instanceof AppError) throw err;
+      }
+      return;
+    }
+
+    // In-memory token bucket for local test environment
+    const now = Date.now();
+    const entry = this.inMemoryRateLimits.get(key) || { tokens: maxTokens, lastReplenished: now };
+    const elapsedSeconds = Math.floor((now - entry.lastReplenished) / (refillRateSeconds * 1000));
+    if (elapsedSeconds > 0) {
+      entry.tokens = Math.min(maxTokens, entry.tokens + elapsedSeconds);
+      entry.lastReplenished = now;
+    }
+
+    if (entry.tokens > 0) {
+      entry.tokens -= 1;
+      this.inMemoryRateLimits.set(key, entry);
+    } else {
+      throw new AppError(429, 'TOO_MANY_REQUESTS', 'অনুরোধের সীমা অতিক্রম করেছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+    }
   }
 
   async handle(req: HttpRequest): Promise<HttpResponse> {
@@ -57,6 +105,20 @@ export class ApiRouter {
     }
 
     try {
+      // Shared Rate Limiting (Token Bucket: 120 req/min for reads, 30 req/min for writes)
+      const clientIp = (
+        req.headers['x-forwarded-for'] ||
+        req.headers['client-ip'] ||
+        req.headers['x-real-ip'] ||
+        '127.0.0.1'
+      ).split(',')[0].trim();
+
+      const isWrite = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
+      const maxTokens = isWrite ? 30 : 120;
+      const rateLimitKey = `rl:${clientIp}:${isWrite ? 'write' : 'read'}`;
+
+      await this.checkRateLimit(rateLimitKey, maxTokens, 1);
+
       // 1. Normalize path: strip /api/v1, /api, or /.netlify/functions/api
       let normalizedPath = req.path
         .replace(/^\/\.netlify\/functions\/api/, '')
@@ -101,7 +163,7 @@ export class ApiRouter {
       // Helper to require authentication
       const requireAuth = async (): Promise<AuthContext> => {
         const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-        return verifyAuthToken(authHeader, this.env);
+        return verifyAuthToken(authHeader, this.env, this.supabase);
       };
 
       // 3. Routing Table

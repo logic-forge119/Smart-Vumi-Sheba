@@ -28,13 +28,23 @@ export async function verifyAuthToken(
     throw new AppError(401, 'UNAUTHORIZED', 'টোকেন অনুপস্থিত।');
   }
 
+  const isTest = env.nodeEnv === 'test';
+
   // 1. Check for forged / expired test tokens
   if (token === 'forged-token' || token === 'expired-token') {
     throw new AppError(401, 'INVALID_TOKEN', 'টোকেন অকার্যকর বা মেয়াদোত্তীর্ণ।');
   }
 
-  // 2. If Supabase client configured with valid URL & secret, verify via Supabase Auth
-  if (supabase && env.supabaseUrl && env.supabaseServiceRoleKey && !env.supabaseServiceRoleKey.startsWith('REPLACE_')) {
+  // 2. Production Environment: Enforce real Supabase session token verification
+  if (!isTest) {
+    if (token.startsWith('test-token-') || token.startsWith('mock-token-')) {
+      throw new AppError(401, 'INVALID_TOKEN', 'টেস্ট টোকেন প্রোডাকশন পরিবেশে অনুমোদিত নয়।');
+    }
+
+    if (!supabase || !env.supabaseUrl || !env.supabaseServiceRoleKey || env.supabaseServiceRoleKey.startsWith('REPLACE_')) {
+      throw new AppError(503, 'SERVICE_UNAVAILABLE', 'Supabase কনফিগারেশন অনুপস্থিত। প্রোডাকশন প্রমাণীকরণ যাচাই সম্ভব নয়।');
+    }
+
     try {
       const { data, error } = await supabase.auth.getUser(token);
       if (error || !data.user) {
@@ -59,7 +69,7 @@ export async function verifyAuthToken(
     }
   }
 
-  // 3. Fallback / Local mock auth handling (for offline development and tests)
+  // 3. Test Environment: Fallback / Mock auth handling (only active when NODE_ENV === 'test')
   if (token.startsWith('test-token-') || token.startsWith('mock-token-') || token.length >= 8) {
     const rawUid = token.replace(/^(test-token-|mock-token-)/, '');
     const uid = rawUid || 'anonymous-user-default';

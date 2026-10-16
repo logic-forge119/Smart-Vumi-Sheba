@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "test:supabase": "node scripts/verify-supabase.js",
     "lint": "node --check scripts/*.js",
-    "preview": "node scripts/preview-server.js"
+    "preview": "node scripts/preview-server.js",
+    "dev": "npm run build && node scripts/preview-server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

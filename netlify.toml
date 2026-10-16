@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist/public"
 
+[build.environment]
+  # These values are intentionally public (shipped to the browser in config.js)
+  # or non-sensitive settings. SUPABASE_SERVICE_ROLE_KEY remains scanned.
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,DATA_MODE,ACTIVE_DATASET_VERSION,ACTIVE_RULES_VERSION,NODE_ENV"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
